@@ -19,10 +19,15 @@ func main() {
 	// Routes
 
 	e.POST("/users/", insertUser)
+
 	e.GET("/user/:id", selectUser)
+
+	e.GET("/users", selectUsers)
 	e.GET("/users/", selectUsers)
+
 	e.PUT("/users/", updateUser)
-	e.DELETE("/users/:id", deleteUser)
+
+	e.DELETE("/users/:id/", deleteUser)
 
 	// Start server
 	e.Start(":1323")

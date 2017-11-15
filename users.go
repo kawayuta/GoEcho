@@ -39,7 +39,6 @@ func insertUser(c echo.Context) error {
 	if err := c.Bind(u); err != nil {
 		return err
 	}
-
 	sess.InsertInto(tablename).Columns("id", "email", "username", "viewname").Values(u.ID, u.Email, u.Username, u.Viewname).Exec()
 
 	return c.NoContent(http.StatusOK)
@@ -52,6 +51,7 @@ func selectUsers(c echo.Context) error {
 	response.Users = u
 	return c.JSON(http.StatusOK, response)
 }
+
 func selectUser(c echo.Context) error {
 	var m users
 	id := c.Param("id")
