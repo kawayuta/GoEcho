@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
+	"./model"
+	"./handler"
 
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/gocraft/dbr"
@@ -11,7 +13,6 @@ import (
 
 func main() {
 	e := echo.New()
-
 	// Middleware
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

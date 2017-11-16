@@ -1,42 +1,16 @@
-package main
+package handler
 
 import (
 	"net/http"
 	"strconv"
 	"github.com/labstack/echo"
-	"github.com/gocraft/dbr"
+	"../model"
+	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/gocraft/dbr"
+
 )
-
-type (
-	users struct {
-		ID        int    `db:"id"`
-		Email     string `db:"email"`
-		Username  string `db:"username"`
-		Viewname  string `db:"viewname"`
-	}
-
-	usersJSON struct {
-		ID        int    `json:"id"`
-		Email     string `json:"email"`
-		Username  string `json:"username"`
-		Viewname  string `json:"viewname"`
-	}
-
-	responseData struct {
-		Users []users `json:"users"`
-	}
-)
-
-var (
-	tablename = "users"
-	seq       = 1
-	conn, _   = dbr.Open("mysql", "my_app:secret@/my_app", nil)
-	sess      = conn.NewSession(nil)
-)
-
 func insertUser(c echo.Context) error {
-	u := new(usersJSON)
-	if err := c.Bind(u); err != nil {
+	if err := c.Bind(usersJSON); err != nil {
 		return err
 	}
 	sess.InsertInto(tablename).Columns("id", "email", "username", "viewname").Values(u.ID, u.Email, u.Username, u.Viewname).Exec()
