@@ -16,12 +16,12 @@ var (
 	Sess      = Conn.NewSession(nil)
 )
 
-
 func InsertUser(c echo.Context) error {
 	u := new(UsersJSON)
 	if err := c.Bind(u); err != nil {
 		return err
 	}
+
 	Sess.InsertInto(Tablename).Columns("id", "email", "username", "viewname").Values(u.ID, u.Email, u.Username, u.Viewname).Exec()
 
 	return c.NoContent(http.StatusOK)
