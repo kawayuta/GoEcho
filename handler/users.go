@@ -4,50 +4,59 @@ import (
 	"net/http"
 	"strconv"
 	"github.com/labstack/echo"
-	"../model"
+	. "../model"
 	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/gocraft/dbr"
-
+	"github.com/gocraft/dbr"
 )
-func insertUser(c echo.Context) error {
-	if err := c.Bind(usersJSON); err != nil {
+
+var (
+	Tablename = "users"
+	Seq       = 1
+	Conn, _   = dbr.Open("mysql", "my_app:secret@/my_app", nil)
+	Sess      = Conn.NewSession(nil)
+)
+
+
+func InsertUser(c echo.Context) error {
+	u := new(UsersJSON)
+	if err := c.Bind(u); err != nil {
 		return err
 	}
-	sess.InsertInto(tablename).Columns("id", "email", "username", "viewname").Values(u.ID, u.Email, u.Username, u.Viewname).Exec()
+	Sess.InsertInto(Tablename).Columns("id", "email", "username", "viewname").Values(u.ID, u.Email, u.Username, u.Viewname).Exec()
 
 	return c.NoContent(http.StatusOK)
 }
 
-func selectUsers(c echo.Context) error {
-	var u []users
-	sess.Select("*").From(tablename).Load(&u)
-	response := new(responseData)
+func SelectUsers(c echo.Context) error {
+	var u []Users
+	Sess.Select("*").From(Tablename).Load(&u)
+	response := new(ResponseData)
 	response.Users = u
 	return c.JSON(http.StatusOK, response)
 }
 
-func selectUser(c echo.Context) error {
-	var m users
+func SelectUser(c echo.Context) error {
+	var m Users
 	id := c.Param("id")
-	sess.Select("*").From(tablename).Where("id = ?", id).Load(&m)
+	Sess.Select("*").From(Tablename).Where("id = ?", id).Load(&m)
 	return c.JSON(http.StatusOK, m)
 }
 
-func updateUser(c echo.Context) error {
-	u := new(usersJSON)
+func UpdateUser(c echo.Context) error {
+	u := new(UsersJSON)
 	if err := c.Bind(u); err != nil {
 		return err
 	}
 
 	attrsMap := map[string]interface{}{"id": u.ID, "email": u.Email, "username": u.Username, "viewname": u.Viewname}
-	sess.Update(tablename).SetMap(attrsMap).Where("id = ?", u.ID).Exec()
+	Sess.Update(Tablename).SetMap(attrsMap).Where("id = ?", u.ID).Exec()
 	return c.NoContent(http.StatusOK)
 }
 
-func deleteUser(c echo.Context) error {
+func DeleteUser(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 
-	sess.DeleteFrom(tablename).
+	Sess.DeleteFrom(Tablename).
 		Where("id = ?", id).
 		Exec()
 

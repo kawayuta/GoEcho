@@ -3,11 +3,7 @@ package main
 import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-	"./model"
-	"./handler"
-
-	_ "github.com/go-sql-driver/mysql"
-	_ "github.com/gocraft/dbr"
+	. "./handler"
 )
 
 
@@ -19,16 +15,16 @@ func main() {
 
 	// Routes
 
-	e.POST("/users/", insertUser)
+	e.POST("/users/", InsertUser)
 
-	e.GET("/user/:id", selectUser)
+	e.GET("/user/:id", SelectUser)
 
-	e.GET("/users", selectUsers)
-	e.GET("/users/", selectUsers)
+	e.GET("/users", SelectUsers)
+	e.GET("/users/", SelectUsers)
 
-	e.PUT("/users/", updateUser)
+	e.PUT("/users/", UpdateUser)
 
-	e.DELETE("/users/:id/", deleteUser)
+	e.DELETE("/users/:id/", DeleteUser)
 
 	// Start server
 	e.Start(":1323")
